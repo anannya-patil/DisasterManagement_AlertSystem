@@ -1,4 +1,4 @@
-package com.disaster.Disaster_Management.entity;
+package com.disaster.disastermanagement.entity;
 
 import jakarta.persistence.*;
 

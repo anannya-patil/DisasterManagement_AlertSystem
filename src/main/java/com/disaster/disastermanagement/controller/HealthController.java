@@ -1,4 +1,4 @@
-package com.disaster.Disaster_Management.controller;
+package com.disaster.disastermanagement.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

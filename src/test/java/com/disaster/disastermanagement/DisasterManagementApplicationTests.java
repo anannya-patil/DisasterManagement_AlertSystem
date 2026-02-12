@@ -1,4 +1,4 @@
-package com.disaster.Disaster_Management;
+package com.disaster.disastermanagement;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
