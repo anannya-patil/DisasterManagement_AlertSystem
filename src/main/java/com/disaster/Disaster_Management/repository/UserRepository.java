@@ -1,8 +1,8 @@
-package com.disaster.disastermanagement.repository;
+package com.disaster.Disaster_Management.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.disaster.disastermanagement.entity.User;
+import com.disaster.Disaster_Management.entity.User;
 
 import java.util.Optional;
 

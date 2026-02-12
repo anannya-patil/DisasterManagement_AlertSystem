@@ -1,10 +1,10 @@
-package com.disaster.disastermanagement.controller;
+package com.disaster.Disaster_Management.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.disaster.disastermanagement.entity.User;
-import com.disaster.disastermanagement.service.UserService;
+import com.disaster.Disaster_Management.entity.User;
+import com.disaster.Disaster_Management.service.UserService;
 
 import java.util.List;
 
