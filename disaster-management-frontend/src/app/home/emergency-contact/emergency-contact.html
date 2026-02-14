@@ -1,0 +1,14 @@
+<div class="emergency-panel glass">
+  <h3>Emergency contacts</h3>
+  <ul class="contact-list">
+    @for (c of contacts; track c.number) {
+      <li class="contact-item">
+        <div class="contact-info">
+          <strong>{{ c.name }}</strong>
+          <span class="contact-type">{{ c.type }}</span>
+        </div>
+        <a [href]="'tel:' + c.number" class="contact-number">{{ c.number }}</a>
+      </li>
+    }
+  </ul>
+</div>

@@ -1,0 +1,23 @@
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [FormsModule, RouterLink],
+  templateUrl: './login.html',
+  styleUrls: ['./login.css'],
+})
+export class Login {
+  email = '';
+  phone = '';
+
+  constructor(private auth: AuthService) {}
+
+  onSubmit(): void {
+    if (!this.email.trim() || !this.phone.trim()) return;
+    this.auth.login(this.email.trim(), this.phone.trim());
+  }
+}

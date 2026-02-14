@@ -1,0 +1,162 @@
+<div class="dashboard">
+  @switch (role) {
+    @case ('admin') {
+      <section class="dashboard-hero">
+        <div class="hero-text">
+          <h2 class="hero-title">Admin Dashboard</h2>
+          <p class="hero-subtitle">Manage users, alerts, and system-wide reports.</p>
+        </div>
+        <div class="hero-actions">
+          <a routerLink="/home/report" class="btn-report"><span class="btn-report-icon">✎</span> Report Incident</a>
+          <a routerLink="/home/alerts-manage" class="btn-report btn-report-secondary">Manage Alerts</a>
+        </div>
+      </section>
+      <section class="stats-row">
+        <div class="stat-card glass card-hover">
+          <span class="stat-icon">👥</span>
+          <span class="stat-value">156</span>
+          <span class="stat-label">Users</span>
+        </div>
+        <div class="stat-card glass card-hover">
+          <span class="stat-icon">🔔</span>
+          <span class="stat-value">12</span>
+          <span class="stat-label">Active Alerts</span>
+        </div>
+        <div class="stat-card glass card-hover">
+          <span class="stat-icon">📋</span>
+          <span class="stat-value">24</span>
+          <span class="stat-label">Reports Today</span>
+        </div>
+      </section>
+      <section class="quick-actions">
+        <span class="quick-actions-label">Quick actions</span>
+        <div class="quick-actions-buttons">
+          <a routerLink="/home/report" class="quick-btn glass"><span class="quick-icon">✎</span> Report</a>
+          <a routerLink="/home/alerts-manage" class="quick-btn glass"><span class="quick-icon">🔔</span> Manage Alerts</a>
+          <a routerLink="/home/users" class="quick-btn glass"><span class="quick-icon">👥</span> Users</a>
+          <a href="#emergency" class="quick-btn glass"><span class="quick-icon">📞</span> Emergency</a>
+        </div>
+      </section>
+      <div class="dashboard-grid">
+        <section class="grid-cell card-section">
+          <h3 class="section-title"><span class="section-title-accent"></span>Weather Overview</h3>
+          <app-weather />
+        </section>
+        <section class="grid-cell card-section">
+          <h3 class="section-title"><span class="section-title-accent"></span>Live Clock</h3>
+          <app-clock />
+        </section>
+        <section class="grid-cell card-section alerts-section">
+          <app-alerts />
+        </section>
+        <section class="grid-cell card-section" id="emergency">
+          <h3 class="section-title"><span class="section-title-accent"></span>Emergency Contacts</h3>
+          <app-emergency-contact />
+        </section>
+      </div>
+    }
+    @case ('responder') {
+      <section class="dashboard-hero">
+        <div class="hero-text">
+          <h2 class="hero-title">Responder Dashboard</h2>
+          <p class="hero-subtitle">Respond to incidents and track your assignments.</p>
+        </div>
+        <div class="hero-actions">
+          <a routerLink="/home/report" class="btn-report"><span class="btn-report-icon">✎</span> Report Incident</a>
+          <a routerLink="/home/assignments" class="btn-report btn-report-secondary">My Assignments</a>
+        </div>
+      </section>
+      <section class="stats-row">
+        <div class="stat-card glass card-hover">
+          <span class="stat-icon">📋</span>
+          <span class="stat-value">2</span>
+          <span class="stat-label">My Assignments</span>
+        </div>
+        <div class="stat-card glass card-hover">
+          <span class="stat-icon">🔔</span>
+          <span class="stat-value">12</span>
+          <span class="stat-label">Active Alerts</span>
+        </div>
+        <div class="stat-card glass card-hover">
+          <span class="stat-icon">📄</span>
+          <span class="stat-value">24</span>
+          <span class="stat-label">Open Reports</span>
+        </div>
+      </section>
+      <section class="quick-actions">
+        <span class="quick-actions-label">Quick actions</span>
+        <div class="quick-actions-buttons">
+          <a routerLink="/home/report" class="quick-btn glass"><span class="quick-icon">✎</span> Report Incident</a>
+          <a routerLink="/home/assignments" class="quick-btn glass"><span class="quick-icon">📋</span> My Assignments</a>
+          <a href="#emergency" class="quick-btn glass"><span class="quick-icon">📞</span> Emergency</a>
+        </div>
+      </section>
+      <div class="dashboard-grid">
+        <section class="grid-cell card-section">
+          <h3 class="section-title"><span class="section-title-accent"></span>Weather Overview</h3>
+          <app-weather />
+        </section>
+        <section class="grid-cell card-section">
+          <h3 class="section-title"><span class="section-title-accent"></span>Live Clock</h3>
+          <app-clock />
+        </section>
+        <section class="grid-cell card-section alerts-section">
+          <app-alerts />
+        </section>
+        <section class="grid-cell card-section" id="emergency">
+          <h3 class="section-title"><span class="section-title-accent"></span>Emergency Contacts</h3>
+          <app-emergency-contact />
+        </section>
+      </div>
+    }
+    @default {
+      <!-- Citizen (and fallback) -->
+      <section class="dashboard-hero">
+        <div class="hero-text">
+          <h2 class="hero-title">Stay Informed</h2>
+          <p class="hero-subtitle">View alerts, weather, and report incidents in your area.</p>
+        </div>
+        <a routerLink="/home/report" class="btn-report">
+          <span class="btn-report-icon">✎</span>
+          Report Incident
+        </a>
+      </section>
+      <section class="stats-row stats-row-citizen">
+        <div class="stat-card glass card-hover">
+          <span class="stat-icon">🔔</span>
+          <span class="stat-value">12</span>
+          <span class="stat-label">Active Alerts</span>
+        </div>
+        <div class="stat-card glass card-hover">
+          <span class="stat-icon">⛅</span>
+          <span class="stat-value">22°</span>
+          <span class="stat-label">Current</span>
+        </div>
+      </section>
+      <section class="quick-actions">
+        <span class="quick-actions-label">Quick actions</span>
+        <div class="quick-actions-buttons">
+          <a routerLink="/home/report" class="quick-btn glass"><span class="quick-icon">✎</span> Report Incident</a>
+          <a href="#emergency" class="quick-btn glass"><span class="quick-icon">📞</span> Emergency Contacts</a>
+        </div>
+      </section>
+      <div class="dashboard-grid dashboard-grid-citizen">
+        <section class="grid-cell card-section">
+          <h3 class="section-title"><span class="section-title-accent"></span>Weather Overview</h3>
+          <app-weather />
+        </section>
+        <section class="grid-cell card-section">
+          <h3 class="section-title"><span class="section-title-accent"></span>Live Clock</h3>
+          <app-clock />
+        </section>
+        <section class="grid-cell card-section alerts-section">
+          <app-alerts />
+        </section>
+        <section class="grid-cell card-section" id="emergency">
+          <h3 class="section-title"><span class="section-title-accent"></span>Emergency Contacts</h3>
+          <app-emergency-contact />
+        </section>
+      </div>
+    }
+  }
+</div>

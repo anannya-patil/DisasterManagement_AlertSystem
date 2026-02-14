@@ -1,0 +1,19 @@
+<div class="weather-card glass card-hover">
+  <div class="weather-header">
+    <div class="weather-icon-wrap">
+      <span class="weather-icon" aria-hidden="true">{{ weather.icon }}</span>
+    </div>
+    <div>
+      <h3>Weather</h3>
+      <p class="location">{{ weather.location }}</p>
+    </div>
+  </div>
+  <div class="weather-main">
+    <span class="temp">{{ weather.temp }}°C</span>
+    <span class="condition">{{ weather.condition }}</span>
+  </div>
+  <div class="weather-details">
+    <span>Humidity {{ weather.humidity }}%</span>
+    <span>Wind {{ weather.wind }} km/h</span>
+  </div>
+</div>

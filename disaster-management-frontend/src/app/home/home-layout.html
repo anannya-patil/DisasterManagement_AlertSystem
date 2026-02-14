@@ -1,0 +1,55 @@
+<div class="layout">
+  <div class="sidebar-backdrop" [class.open]="sidebarOpen()" (click)="closeSidebar()" aria-hidden="true"></div>
+  <aside class="sidebar" [class.open]="sidebarOpen()">
+    <div class="sidebar-brand">
+      <div class="logo-block">
+        <span class="logo">DMAS</span>
+        <span class="logo-tagline">Alert System</span>
+      </div>
+      <span class="role-badge">{{ roleLabel }}</span>
+      <button type="button" class="sidebar-close" aria-label="Close menu" (click)="closeSidebar()">×</button>
+    </div>
+    <nav class="sidebar-nav">
+      @for (item of sidebarItems; track item.path) {
+        <a
+          routerLink="{{ item.path }}"
+          routerLinkActive="active"
+          class="nav-link"
+          [routerLinkActiveOptions]="{ exact: item.path === '/home' }"
+          (click)="closeSidebar()"
+        >
+          <span class="nav-link-icon">{{ item.icon }}</span>
+          <span class="nav-link-text">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+    <div class="sidebar-footer">
+      <button type="button" class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="navbar">
+      <button type="button" class="nav-menu-btn" aria-label="Open menu" (click)="toggleSidebar()">
+        <span class="nav-menu-icon"></span>
+        <span class="nav-menu-icon"></span>
+        <span class="nav-menu-icon"></span>
+      </button>
+      <div class="nav-brand-inline">
+        <h1 class="nav-title">Disaster Management</h1>
+        <p class="nav-subtitle">{{ navSubtitle }}</p>
+      </div>
+      <div class="nav-actions">
+        <span class="nav-role-badge">{{ roleLabel }}</span>
+        <button type="button" class="icon-btn" title="Notifications" aria-label="Notifications">
+          <span class="bell">🔔</span>
+          <span class="badge">3</span>
+        </button>
+      </div>
+    </header>
+    <main class="content">
+      <div class="content-inner">
+        <router-outlet />
+      </div>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="page">
+  <div class="container glass-panel">
+    <h1 class="title">Disaster Management & Alert System</h1>
+    <p class="subtitle">Select your role to continue</p>
+    <div class="cards">
+      <button type="button" class="card" (click)="selectRole('admin')">
+        <span class="card-icon">⚙</span>
+        <h2>Admin</h2>
+        <p>Manage system, users, and alerts</p>
+      </button>
+      <button type="button" class="card" (click)="selectRole('responder')">
+        <span class="card-icon">🚒</span>
+        <h2>Responder</h2>
+        <p>Respond to incidents and coordinate</p>
+      </button>
+      <button type="button" class="card" (click)="selectRole('citizen')">
+        <span class="card-icon">👤</span>
+        <h2>Citizen</h2>
+        <p>Report and view alerts</p>
+      </button>
+    </div>
+  </div>
+</div>

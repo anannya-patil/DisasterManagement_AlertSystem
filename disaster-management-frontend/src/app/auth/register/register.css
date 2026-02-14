@@ -1,0 +1,98 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-6);
+}
+
+.auth-panel {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  color: #fff;
+  animation: panelIn 0.45s ease-out;
+}
+
+.auth-panel h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  margin-bottom: 1.75rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.form-group input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.form-group input:focus {
+  border-color: rgba(240, 180, 41, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.form-group input.readonly {
+  opacity: 0.9;
+  cursor: default;
+}
+
+.auth-panel .btn-primary {
+  margin-top: 0.5rem;
+}
+
+.footer-text {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.footer-text a {
+  color: #f0b429;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer-text a:hover {
+  text-decoration: underline;
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

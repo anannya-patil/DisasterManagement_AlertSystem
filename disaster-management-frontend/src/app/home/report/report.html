@@ -1,0 +1,32 @@
+<div class="report-page">
+  <h2>Report Disaster</h2>
+  @if (submitted) {
+    <div class="success-message glass">
+      <span class="success-icon">✓</span>
+      <p>Report submitted. Responders have been notified.</p>
+    </div>
+  } @else {
+    <form class="report-form glass" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Type</label>
+        <select [(ngModel)]="type" name="type" required>
+          <option value="">Select type</option>
+          <option value="flood">Flood</option>
+          <option value="earthquake">Earthquake</option>
+          <option value="fire">Fire</option>
+          <option value="storm">Storm</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Location</label>
+        <input type="text" [(ngModel)]="location" name="location" placeholder="Area or address" required />
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea [(ngModel)]="description" name="description" rows="4" placeholder="Brief description" required></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Submit Report</button>
+    </form>
+  }
+</div>
