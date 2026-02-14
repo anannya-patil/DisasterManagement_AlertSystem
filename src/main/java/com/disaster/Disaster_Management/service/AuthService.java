@@ -41,15 +41,25 @@ public class AuthService {
     }
 
     public String login(String email, String password)
+{
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+
+    if(!passwordEncoder.matches(password, user.getPassword()))
     {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
-
-        if(!passwordEncoder.matches(password, user.getPassword()))
-        {
-            throw new RuntimeException("Invalid email or password");
-        }
-
-        return jwtUtil.generateToken(user.getId(), user.getRole().name());
+        throw new RuntimeException("Invalid email or password");
     }
+
+    // Generate token with ALL three parameters
+    String token = jwtUtil.generateToken(
+        user.getId(), 
+        user.getEmail(), 
+        user.getRole().name()  // This should be "ADMIN", "RESPONDER", or "CITIZEN"
+    );
+    
+    System.out.println("Login successful for: " + email);
+    System.out.println("Generated token: " + token);
+    
+    return token;
+}
 }

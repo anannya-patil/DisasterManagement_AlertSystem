@@ -1,8 +1,8 @@
 package com.disaster.Disaster_Management.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,27 +17,52 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
 
-    public SecurityConfig(JwtFilter jwtFilter)
-    {
+    public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder()
-    {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
-    {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            
+            // Authorization rules
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/error/**").permitAll()
+                .requestMatchers("/simple-test-public").permitAll()
+                .requestMatchers("/citizen/test").permitAll()  // ✅ NEW - Public test endpoint
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/responder/**").hasRole("RESPONDER")
+                .requestMatchers("/citizen/**").hasRole("CITIZEN")
+                .requestMatchers("/profiles/**").authenticated()
                 .anyRequest().authenticated()
             )
+            
+            // Exception handling
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"timestamp\":\"" + java.time.Instant.now() + 
+                        "\",\"status\":401,\"error\":\"Unauthorized\",\"message\":\"No valid authentication token provided\",\"path\":\"" + 
+                        request.getRequestURI() + "\"}");
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"timestamp\":\"" + java.time.Instant.now() + 
+                        "\",\"status\":403,\"error\":\"Forbidden\",\"message\":\"Access denied - insufficient privileges\",\"path\":\"" + 
+                        request.getRequestURI() + "\"}");
+                })
+            )
+            
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .formLogin(form -> form.disable())
             .httpBasic(httpBasic -> httpBasic.disable());

@@ -14,7 +14,7 @@ public class Profile {
     private String phone;
     private String region;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 

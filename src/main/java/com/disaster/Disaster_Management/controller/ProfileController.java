@@ -18,9 +18,9 @@ public class ProfileController {
 
     // Create profile
     @PostMapping
-    public Profile create(@RequestBody Profile profile) {
-        return profileService.save(profile);
-    }
+public Profile create(@RequestBody Profile profile) {
+    return profileService.createProfile(profile);
+}
 
     // Get all profiles
     @GetMapping
