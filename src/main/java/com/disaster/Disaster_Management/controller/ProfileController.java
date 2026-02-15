@@ -2,8 +2,8 @@ package com.disaster.Disaster_Management.controller;
 
 import com.disaster.Disaster_Management.entity.Profile;
 import com.disaster.Disaster_Management.service.ProfileService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -16,25 +16,21 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    // Create profile
     @PostMapping
-public Profile create(@RequestBody Profile profile) {
-    return profileService.createProfile(profile);
-}
+    public ResponseEntity<?> create(@RequestBody Profile profile) {
+        return profileService.createProfile(profile);
+    }
 
-    // Get all profiles
     @GetMapping
     public List<Profile> getAll() {
         return profileService.getAll();
     }
 
-    // Update profile
     @PutMapping("/{id}")
-    public Profile update(@PathVariable Long id, @RequestBody Profile profile) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Profile profile) {
         return profileService.update(id, profile);
     }
 
-    // Filter by region
     @GetMapping("/region/{region}")
     public List<Profile> getByRegion(@PathVariable String region) {
         return profileService.getByRegion(region);

@@ -1,8 +1,8 @@
 package com.disaster.Disaster_Management.controller;
 
 import com.disaster.Disaster_Management.service.AuthService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
 @RestController
@@ -25,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody Map<String, String> request) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
         return authService.login(
                 request.get("email"),
                 request.get("password")
