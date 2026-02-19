@@ -18,7 +18,7 @@ public class DisasterEvent {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "disaster_type", nullable = false)
     private DisasterType disasterType;
 
     @Enumerated(EnumType.STRING)
@@ -28,19 +28,54 @@ public class DisasterEvent {
     private Double latitude;
     private Double longitude;
 
-    @Column(nullable = false)
+    @Column(name = "location_name", nullable = false)
     private String locationName;
 
     private String source;
 
     private Double magnitude;
 
-    public Long getId() {
-        return id;
+    @Column(name = "event_time")
+    private LocalDateTime eventTime;
+
+    @Enumerated(EnumType.STRING)
+    private DisasterStatus status;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "approved_by")
+    private String approvedBy;
+
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt;
+
+    public DisasterEvent() {}
+
+    // ========================
+    // Lifecycle Hooks
+    // ========================
+
+    @PrePersist
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @PreUpdate
+    public void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    // ========================
+    // Getters & Setters
+    // ========================
+
+    public Long getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -135,16 +170,8 @@ public class DisasterEvent {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public String getApprovedBy() {
@@ -162,30 +189,4 @@ public class DisasterEvent {
     public void setApprovedAt(LocalDateTime approvedAt) {
         this.approvedAt = approvedAt;
     }
-
-    private LocalDateTime eventTime;
-
-    @Enumerated(EnumType.STRING)
-    private DisasterStatus status;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    private String approvedBy;
-    private LocalDateTime approvedAt;
-
-    public DisasterEvent() {}
-
-    @PrePersist
-    public void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
-    // Generate getters and setters using IDE
 }

@@ -4,9 +4,11 @@ import com.disaster.Disaster_Management.entity.*;
 import com.disaster.Disaster_Management.repository.DisasterEventRepository;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class DisasterEventService {
@@ -130,5 +132,21 @@ public class DisasterEventService {
         existing.setEventTime(updatedData.getEventTime());
 
         return repository.save(existing);
+    }
+
+    //Auto-Verification for Critical Earthquakes
+    @Scheduled(fixedRate = 60000)
+    public void autoVerifyCriticalEarthquakes() {
+
+        System.out.println("Auto verification check running at: " + LocalDateTime.now());
+
+        List<DisasterEvent> events = repository.findAutoVerifiableEarthquakes();
+
+        System.out.println("Matching events count: " + events.size());
+
+        events.forEach(event -> {
+            event.setStatus(DisasterStatus.VERIFIED);
+            repository.save(event);
+        });
     }
 }
