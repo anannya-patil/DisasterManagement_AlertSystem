@@ -1,1 +1,61 @@
-<p>admin-dashboard works!</p>
+<div class="dashboard-container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h3>Admin Portal</h3>
+    <p>Welcome, {{ userEmail }}</p>
+    <button class="btn btn-logout" (click)="logout()">Logout</button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <div class="section">
+      <h2>Pending Disaster Alerts</h2>
+
+      <div class="alerts-list">
+
+        <div *ngFor="let disaster of pendingDisasters" class="alert-item">
+
+          <strong>{{ disaster.disasterType }}</strong> -
+          {{ disaster.title }}
+          ({{ disaster.severity }})
+
+          <div style="margin-top:8px;">
+            Location: {{ disaster.locationName }}
+            <span *ngIf="disaster.magnitude">
+              | Magnitude: {{ disaster.magnitude }}
+            </span>
+          </div>
+
+          <div style="margin-top:10px;">
+            <button class="btn btn-primary"
+                    (click)="approve(disaster.id)">
+              Approve
+            </button>
+
+            <button class="btn btn-danger"
+                    style="margin-left:10px;"
+                    (click)="reject(disaster.id)">
+              Reject
+            </button>
+
+            <button class="btn"
+                    style="margin-left:10px; background:#27ae60; color:white;"
+                    (click)="resolve(disaster.id)">
+              Resolve
+            </button>
+          </div>
+
+        </div>
+
+        <div *ngIf="pendingDisasters.length === 0"
+             class="no-alerts">
+          No pending disasters.
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

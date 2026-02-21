@@ -1,12 +1,59 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { DisasterService } from '../services/disaster.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './admin-dashboard.component.html',
-  styleUrl: './admin-dashboard.component.css'
+  styleUrls: ['./admin-dashboard.component.css']
 })
-export class AdminDashboardComponent {
+export class AdminDashboardComponent implements OnInit {
 
+  pendingDisasters: any[] = [];
+  userEmail = '';
+
+  constructor(
+    private disasterService: DisasterService,
+    private authService: AuthService
+  ) {
+    this.userEmail = this.authService.getUserEmail() || '';
+  }
+
+  ngOnInit(): void {
+    this.loadPending();
+  }
+
+  loadPending(): void {
+    this.disasterService.getPendingDisasters().subscribe({
+      next: (data: any) => {
+        this.pendingDisasters = data.content || data;
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  approve(id: number): void {
+    this.disasterService.approveDisaster(id).subscribe(() => {
+      this.loadPending();
+    });
+  }
+
+  reject(id: number): void {
+    this.disasterService.rejectDisaster(id).subscribe(() => {
+      this.loadPending();
+    });
+  }
+
+  resolve(id: number): void {
+    this.disasterService.resolveDisaster(id).subscribe(() => {
+      this.loadPending();
+    });
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
 }
