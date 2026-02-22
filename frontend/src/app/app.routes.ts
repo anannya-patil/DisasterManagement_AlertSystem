@@ -10,6 +10,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { DisasterListComponent } from './disaster-list/disaster-list.component';
+import { EditDisasterComponent } from './edit-disaster/edit-disaster.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -43,6 +44,11 @@ export const routes: Routes = [
     component: DisasterListComponent, 
     canActivate: [AuthGuard] 
   },
+    { 
+  path: 'edit-disaster/:id', 
+  component: EditDisasterComponent, 
+  canActivate: [AuthGuard] 
+},
   { 
     path: 'alerts', 
     component: AlertsViewComponent, 

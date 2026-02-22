@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';  // ✅ ADD THIS IMPORT
 import { DisasterService } from '../services/disaster.service';
 import { AuthService } from '../services/auth.service';
 
@@ -17,7 +18,8 @@ export class AdminDashboardComponent implements OnInit {
 
   constructor(
     private disasterService: DisasterService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router  // ✅ ADD THIS
   ) {
     this.userEmail = this.authService.getUserEmail() || '';
   }
@@ -51,6 +53,11 @@ export class AdminDashboardComponent implements OnInit {
     this.disasterService.resolveDisaster(id).subscribe(() => {
       this.loadPending();
     });
+  }
+
+  // ✅ NEW METHOD - Navigate to disasters page
+  goToDisasters(): void {
+    this.router.navigate(['/disasters']);
   }
 
   logout(): void {

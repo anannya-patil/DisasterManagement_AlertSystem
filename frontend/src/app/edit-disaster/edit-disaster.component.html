@@ -1,0 +1,169 @@
+<div class="edit-container">
+  <div class="edit-box">
+    <h2>Edit Disaster Details</h2>
+    <p class="subtitle">Update information for disaster ID: {{ disasterId }}</p>
+    
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading">
+      <div class="spinner"></div>
+      Loading disaster data...
+    </div>
+    
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="error-message">
+      ⚠️ {{ errorMessage }}
+    </div>
+    
+    <!-- Edit Form -->
+    <form *ngIf="!loading && disaster" (ngSubmit)="saveChanges()" #editForm="ngForm">
+      
+      <div class="form-group">
+        <label for="title">Title *</label>
+        <input 
+          type="text" 
+          id="title"
+          name="title"
+          class="form-control"
+          [(ngModel)]="disaster.title"
+          required
+          #titleInput="ngModel"
+        >
+        <div *ngIf="titleInput.invalid && titleInput.touched" class="text-danger">
+          Title is required
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <textarea 
+          id="description"
+          name="description"
+          class="form-control"
+          rows="4"
+          [(ngModel)]="disaster.description"
+          required
+          #descInput="ngModel"
+        ></textarea>
+        <div *ngIf="descInput.invalid && descInput.touched" class="text-danger">
+          Description is required
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group half">
+          <label for="disasterType">Disaster Type *</label>
+          <select 
+            id="disasterType"
+            name="disasterType"
+            class="form-control"
+            [(ngModel)]="disaster.disasterType"
+            required
+          >
+            <option value="FLOOD">Flood</option>
+            <option value="CYCLONE">Cyclone</option>
+            <option value="EARTHQUAKE">Earthquake</option>
+            <option value="FIRE">Fire</option>
+            <option value="STORM">Storm</option>
+          </select>
+        </div>
+        
+        <div class="form-group half">
+          <label for="severity">Severity *</label>
+          <select 
+            id="severity"
+            name="severity"
+            class="form-control"
+            [(ngModel)]="disaster.severity"
+            required
+          >
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+            <option value="CRITICAL">Critical</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group half">
+          <label for="latitude">Latitude</label>
+          <input 
+            type="number"
+            id="latitude"
+            name="latitude"
+            class="form-control"
+            step="any"
+            [(ngModel)]="disaster.latitude"
+          >
+        </div>
+        
+        <div class="form-group half">
+          <label for="longitude">Longitude</label>
+          <input 
+            type="number"
+            id="longitude"
+            name="longitude"
+            class="form-control"
+            step="any"
+            [(ngModel)]="disaster.longitude"
+          >
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="locationName">Location *</label>
+        <input 
+          type="text"
+          id="locationName"
+          name="locationName"
+          class="form-control"
+          [(ngModel)]="disaster.locationName"
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="source">Source</label>
+        <input 
+          type="text"
+          id="source"
+          name="source"
+          class="form-control"
+          [(ngModel)]="disaster.source"
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="magnitude">Magnitude (for earthquakes)</label>
+        <input 
+          type="number"
+          id="magnitude"
+          name="magnitude"
+          class="form-control"
+          step="0.1"
+          [(ngModel)]="disaster.magnitude"
+        >
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="cancel()">
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="btn-save"
+          [disabled]="editForm.invalid || saving"
+        >
+          <span *ngIf="saving">Saving...</span>
+          <span *ngIf="!saving">Save Changes</span>
+        </button>
+      </div>
+      
+      <!-- Success Message -->
+      <div *ngIf="successMessage" class="success-message">
+        ✅ {{ successMessage }}
+      </div>
+      
+    </form>
+  </div>
+</div>

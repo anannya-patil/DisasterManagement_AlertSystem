@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DisasterEventService {
@@ -75,6 +76,25 @@ public class DisasterEventService {
         return repository.findAll(spec, pageable);
     }
 
+    // 🔹 Get Disaster by ID - UPDATED WITH DEBUG
+    public Optional<DisasterEvent> getDisasterById(Long id) {
+        System.out.println("🔍 Service: Looking for disaster with ID: " + id);
+        
+        Optional<DisasterEvent> result = repository.findById(id);
+        
+        if (result.isPresent()) {
+            DisasterEvent event = result.get();
+            System.out.println("✅ Service: Found disaster: " + event.getTitle());
+            System.out.println("   Location: " + event.getLocationName());
+            System.out.println("   Severity: " + event.getSeverity());
+            System.out.println("   Type: " + event.getDisasterType());
+        } else {
+            System.out.println("❌ Service: No disaster found with ID: " + id);
+        }
+        
+        return result;
+    }
+
     // 🔹 Admin Approve
     public DisasterEvent approve(Long id, String adminEmail) {
         DisasterEvent event = repository.findById(id)
@@ -115,6 +135,7 @@ public class DisasterEventService {
         );
     }
 
+    // 🔹 Update Disaster
     public DisasterEvent update(Long id, DisasterEvent updatedData) {
 
         DisasterEvent existing = repository.findById(id)
@@ -134,19 +155,45 @@ public class DisasterEventService {
         return repository.save(existing);
     }
 
-    //Auto-Verification for Critical Earthquakes
-    @Scheduled(fixedRate = 60000)
-    public void autoVerifyCriticalEarthquakes() {
+    // ✅ 5-Record Retention Logic
+    public void saveWithRetention(DisasterEvent event) {
+        String location = event.getLocationName();
+        
+        // Count existing events for this location
+        Specification<DisasterEvent> spec = (root, query, cb) -> 
+            cb.equal(root.get("locationName"), location);
+        
+        long count = repository.count(spec);
+        
+        if (count >= 5) {
+            // Find oldest event and delete it
+            Pageable pageable = PageRequest.of(0, 1, Sort.by("createdAt").ascending());
+            Page<DisasterEvent> oldest = repository.findAll(spec, pageable);
+            if (oldest.hasContent()) {
+                repository.delete(oldest.getContent().get(0));
+                System.out.println("🗑️ Deleted oldest event for " + location);
+            }
+        }
+        
+        // Save new event
+        event.setStatus(DisasterStatus.PENDING);
+        repository.save(event);
+        System.out.println("✅ Saved new event for " + location);
+    }
 
-        System.out.println("Auto verification check running at: " + LocalDateTime.now());
+    // Auto-Verification for Critical Earthquakes
+    @Scheduled(fixedRate = 60000) // Every minute
+    public void autoVerifyCriticalEarthquakes() {
+        System.out.println("🔍 Auto verification check running at: " + LocalDateTime.now());
 
         List<DisasterEvent> events = repository.findAutoVerifiableEarthquakes();
 
-        System.out.println("Matching events count: " + events.size());
+        System.out.println("📊 Matching events count: " + events.size());
 
         events.forEach(event -> {
             event.setStatus(DisasterStatus.VERIFIED);
             repository.save(event);
+            System.out.println("⚡ Auto-verified earthquake: " + event.getTitle() + " at " + event.getLocationName());
         });
     }
 }

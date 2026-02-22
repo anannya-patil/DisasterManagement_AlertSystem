@@ -1,105 +1,180 @@
-<div class="disaster-list-container">
-  <h2>Live Disaster Updates</h2>
-  
-  <!-- Filters -->
-  <app-disaster-filters (filterChange)="onFilterChange($event)"></app-disaster-filters>
-  
-  <!-- Loading State -->
-  <div *ngIf="loading" class="loading">
-    Loading disasters...
-  </div>
-  
-  <!-- Error Message -->
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
-  </div>
-  
-  <!-- Disaster Cards -->
-  <div *ngIf="!loading && !errorMessage" class="disasters-grid">
-    <div *ngFor="let disaster of disasters" class="disaster-card" 
-         [class.verified]="disaster.status === 'VERIFIED'"
-         [class.pending]="disaster.status === 'PENDING'">
-      
-      <div class="card-header">
-        <h3>{{ disaster.title }}</h3>
-        <span class="status-badge" [class]="disaster.status.toLowerCase()">
-          {{ disaster.status }}
-        </span>
-      </div>
-      
-      <div class="card-body">
-        <p class="description">{{ disaster.description }}</p>
-        
-        <div class="details-grid">
-          <div class="detail-item">
-            <strong>Type:</strong> {{ disaster.disasterType }}
-          </div>
-          <div class="detail-item">
-            <strong>Severity:</strong> 
-            <span class="severity-badge" [class]="getSeverityClass(disaster.severity)">
-              {{ disaster.severity }}
-            </span>
-          </div>
-          <div class="detail-item">
-            <strong>Location:</strong> {{ disaster.locationName }}
-          </div>
-          <div class="detail-item">
-            <strong>Time:</strong> {{ disaster.eventTime | date:'medium' }}
-          </div>
-          <div class="detail-item">
-            <strong>Source:</strong> {{ disaster.source }}
-          </div>
-        </div>
-        
-        <div *ngIf="disaster.status === 'VERIFIED'" class="coordinates">
-          📍 {{ disaster.latitude | number:'1.2-2' }}, {{ disaster.longitude | number:'1.2-2' }}
-        </div>
-      </div>
-      
-      <!-- Admin Actions -->
-      <div *ngIf="userRole === 'ADMIN' && disaster.status === 'PENDING'" class="admin-actions">
-        <button class="btn-approve" (click)="onApprove(disaster.id)">Approve</button>
-        <button class="btn-reject" (click)="onReject(disaster.id)">Reject</button>
-        <button class="btn-edit" (click)="onEdit(disaster)">Edit</button>
-      </div>
-      
-      <!-- Responder View -->
-      <div *ngIf="userRole === 'RESPONDER'" class="responder-actions">
-        <button class="btn-assign" (click)="onAssign(disaster.id)">Accept Task</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Pagination -->
-  <div *ngIf="!loading && totalPages > 0" class="pagination">
-    <div class="pagination-controls">
-      <button [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">
-        Previous
-      </button>
-      
-      <span *ngFor="let page of getPages()" 
-            class="page-number"
-            [class.active]="page === currentPage"
-            (click)="onPageChange(page)">
-        {{ page + 1 }}
-      </span>
-      
-      <button [disabled]="currentPage === totalPages - 1" (click)="onPageChange(currentPage + 1)">
-        Next
-      </button>
+<div class="disaster-container">
+  <!-- Left Sidebar - Navigation & Filters -->
+  <div class="sidebar">
+    <h2>Disaster Monitoring</h2>
+    
+    <!-- Search Box -->
+    <div class="search-box">
+      <input 
+        type="text" 
+        placeholder="Search for location" 
+        (input)="onSearch($event)"
+        class="search-input"
+      >
     </div>
     
-    <div class="page-size">
-      <select (change)="onPageSizeChange($event)">
-        <option *ngFor="let size of pageSizeOptions" [value]="size" [selected]="size === pageSize">
-          {{ size }} per page
-        </option>
+    <!-- Filters Dropdowns -->
+    <div class="filters">
+      <select (change)="onTypeChange($event)" class="filter-select">
+        <option value="">Type ▼</option>
+        <option *ngFor="let type of disasterTypes" [value]="type">{{type}}</option>
+      </select>
+      
+      <select (change)="onSeverityChange($event)" class="filter-select">
+        <option value="">Severity ▼</option>
+        <option *ngFor="let level of severityLevels" [value]="level">{{level}}</option>
+      </select>
+      
+      <!-- UPDATED: Location dropdown now uses uniqueLocations from database -->
+      <select (change)="onLocationChange($event)" class="filter-select">
+        <option value="">All Locations ▼</option>
+        <option *ngFor="let loc of uniqueLocations" [value]="loc">{{loc}}</option>
       </select>
     </div>
     
-    <div class="page-info">
-      Showing {{ currentPage * pageSize + 1 }} - 
-      {{ min((currentPage + 1) * pageSize, totalElements) }} of {{ totalElements }} disasters
+    <!-- UPDATED: Location List - DYNAMIC from database -->
+    <div class="location-list">
+      <h3>📍 Affected Locations ({{ uniqueLocations.length }})</h3>
+      <div 
+        *ngFor="let loc of filteredLocations" 
+        class="location-item" 
+        (click)="selectLocation(loc)"
+        [class.active]="currentFilter.location === loc"
+      >
+        <span class="location-name">{{loc}}</span>
+        <span class="location-count">{{ getDisasterCountForLocation(loc) }}</span>
+      </div>
+      <div *ngIf="filteredLocations.length === 0" class="no-locations">
+        No locations match your search
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Content - Live Alerts -->
+  <div class="main-content">
+    <h2>Live Alerts ({{ totalElements }})</h2>
+    
+    <!-- Filters Component (if you want to keep it) -->
+    <app-disaster-filters *ngIf="false" (filterChange)="onFilterChange($event)"></app-disaster-filters>
+    
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading">
+      <div class="spinner"></div>
+      Loading disasters...
+    </div>
+    
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="error-message">
+      ⚠️ {{ errorMessage }}
+    </div>
+    
+    <!-- Disaster Cards from Database -->
+    <div *ngIf="!loading && !errorMessage" class="alerts-list">
+      <div 
+        *ngFor="let disaster of disasters" 
+        class="alert-card" 
+        [class]="getSeverityClass(disaster.severity)"
+      >
+        <div class="alert-header">
+          <h3>{{ disaster.title }}</h3>
+          <span class="severity-badge" [class]="disaster.severity.toLowerCase()">
+            {{ disaster.severity }}
+          </span>
+        </div>
+        
+        <p class="alert-description">{{ disaster.description }}</p>
+        
+        <div class="alert-details">
+          <p class="alert-location">
+            <span class="location-icon">📍</span> {{ disaster.locationName }}
+          </p>
+          <p class="alert-time">
+            <span class="time-icon">🕒</span> {{ disaster.eventTime | date:'medium' }}
+          </p>
+          <p class="alert-source">
+            <span class="source-icon">📡</span> {{ disaster.source }}
+          </p>
+          <p *ngIf="disaster.magnitude" class="alert-magnitude">
+            <span class="magnitude-icon">📊</span> Magnitude: {{ disaster.magnitude }}
+          </p>
+        </div>
+        
+        <!-- ✅ FIXED: Single status display - Only show for non-pending disasters -->
+        <div *ngIf="disaster.status !== 'PENDING'" 
+             class="status-badge" 
+             [class]="disaster.status.toLowerCase()">
+          {{ disaster.status }}
+        </div>
+        
+        <!-- ✅ FIXED: Admin Actions - Only show for PENDING disasters -->
+        <div *ngIf="userRole === 'ADMIN' && disaster.status === 'PENDING'" 
+             class="admin-actions">
+          <button class="btn-approve" (click)="approveDisaster(disaster.id)" title="Approve this alert">
+            ✓ Approve
+          </button>
+          <button class="btn-reject" (click)="rejectDisaster(disaster.id)" title="Reject this alert">
+            ✗ Reject
+          </button>
+          <button class="btn-edit" (click)="editDisaster(disaster)" title="Edit details">
+            ✎ Edit
+          </button>
+        </div>
+
+        <!-- ❌ REMOVED: Duplicate verified-badge section -->
+        
+      </div>
+      
+      <!-- No Data Message -->
+      <div *ngIf="disasters.length === 0" class="no-data">
+        <p>🌍 No disasters found matching your criteria.</p>
+        <p class="no-data-hint">Try adjusting your filters or check back later.</p>
+      </div>
+    </div>
+    
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 0" class="pagination">
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === 0" 
+        (click)="onPageChange(currentPage - 1)"
+      >
+        ← Previous
+      </button>
+      
+      <div class="page-numbers">
+        <span 
+          *ngFor="let page of getPages()" 
+          class="page-number"
+          [class.active]="page === currentPage"
+          (click)="onPageChange(page)"
+        >
+          {{ page + 1 }}
+        </span>
+      </div>
+      
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === totalPages - 1" 
+        (click)="onPageChange(currentPage + 1)"
+      >
+        Next →
+      </button>
+      
+      <div class="page-info">
+        Showing {{ currentPage * pageSize + 1 }} - 
+        {{ (currentPage + 1) * pageSize > totalElements ? totalElements : (currentPage + 1) * pageSize }}
+        of {{ totalElements }} disasters
+      </div>
+
+      <!-- Page Size Selector -->
+      <div class="page-size">
+        <label>Show:</label>
+        <select (change)="onPageSizeChange($event)" class="page-size-select">
+          <option *ngFor="let size of pageSizeOptions" [value]="size" [selected]="size === pageSize">
+            {{ size }}
+          </option>
+        </select>
+      </div>
     </div>
   </div>
 </div>

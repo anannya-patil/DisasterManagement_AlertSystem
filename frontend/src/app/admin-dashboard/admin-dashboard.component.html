@@ -4,6 +4,12 @@
   <div class="sidebar">
     <h3>Admin Portal</h3>
     <p>Welcome, {{ userEmail }}</p>
+    
+    <!-- ✅ ADDED: Navigation button in sidebar -->
+    <button class="btn btn-disasters" (click)="goToDisasters()">
+      🌍 View Live Disasters
+    </button>
+    
     <button class="btn btn-logout" (click)="logout()">Logout</button>
   </div>
 

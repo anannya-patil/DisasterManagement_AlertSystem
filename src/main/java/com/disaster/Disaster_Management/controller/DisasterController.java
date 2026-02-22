@@ -37,7 +37,6 @@ public class DisasterController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-
         return service.getFilteredDisasters(
                 type,
                 severity,
@@ -49,5 +48,24 @@ public class DisasterController {
                 page,
                 size
         );
+    }
+    
+    // ✅ UPDATED METHOD WITH DEBUG PRINT STATEMENTS
+    @GetMapping("/{id}")
+    public DisasterEvent getDisasterById(@PathVariable Long id) {
+        System.out.println("========== GET DISASTER BY ID ==========");
+        System.out.println("📌 Requested ID: " + id);
+        System.out.println("📞 Calling service.getDisasterById()...");
+        
+        DisasterEvent event = service.getDisasterById(id)
+                .orElseThrow(() -> new RuntimeException("Disaster not found with id: " + id));
+        
+        System.out.println("✅ Found disaster: " + event.getTitle());
+        System.out.println("📍 Location: " + event.getLocationName());
+        System.out.println("⚠️ Severity: " + event.getSeverity());
+        System.out.println("🆔 Disaster ID: " + event.getId());
+        System.out.println("========================================");
+        
+        return event;
     }
 }

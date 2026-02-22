@@ -8,8 +8,9 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class DisasterService {
-  private apiUrl = 'http://localhost:8080/disasters';
-private adminUrl = 'http://localhost:8080/admin/disasters';
+  // ✅ FIXED: Added /api to the URL
+  private apiUrl = 'http://localhost:8080/disasters';  // ✅ CORRECT - no /api
+private adminUrl = 'http://localhost:8080/admin/disasters';  // ✅ This is correct
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -35,7 +36,6 @@ private adminUrl = 'http://localhost:8080/admin/disasters';
     if (filter.endDate) params = params.set('endDate', filter.endDate.toISOString());
     if (filter.liveOnly) params = params.set('liveOnly', 'true');
 
-    // ✅ ADD HEADERS WITH TOKEN
     return this.http.get<PageResponse<DisasterEvent>>(`${this.apiUrl}`, { 
       params,
       headers: this.getHeaders() 
