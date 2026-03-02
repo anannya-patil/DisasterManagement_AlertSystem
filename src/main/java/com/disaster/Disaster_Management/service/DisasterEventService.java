@@ -76,20 +76,20 @@ public class DisasterEventService {
         return repository.findAll(spec, pageable);
     }
 
-    // 🔹 Get Disaster by ID - UPDATED WITH DEBUG
+    //Get Disaster by ID - UPDATED WITH DEBUG
     public Optional<DisasterEvent> getDisasterById(Long id) {
-        System.out.println("🔍 Service: Looking for disaster with ID: " + id);
+        System.out.println("Service: Looking for disaster with ID: " + id);
         
         Optional<DisasterEvent> result = repository.findById(id);
         
         if (result.isPresent()) {
             DisasterEvent event = result.get();
-            System.out.println("✅ Service: Found disaster: " + event.getTitle());
+            System.out.println("   Service: Found disaster: " + event.getTitle());
             System.out.println("   Location: " + event.getLocationName());
             System.out.println("   Severity: " + event.getSeverity());
             System.out.println("   Type: " + event.getDisasterType());
         } else {
-            System.out.println("❌ Service: No disaster found with ID: " + id);
+            System.out.println("Service: No disaster found with ID: " + id);
         }
         
         return result;
@@ -116,7 +116,7 @@ public class DisasterEventService {
         return repository.save(event);
     }
 
-    // 🔹 Admin Resolve
+    //Admin Resolve
     public DisasterEvent resolve(Long id) {
         DisasterEvent event = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Disaster not found"));
@@ -125,7 +125,7 @@ public class DisasterEventService {
         return repository.save(event);
     }
 
-    // 🔹 Get Pending (Admin)
+    //Get Pending (Admin)
     public Page<DisasterEvent> getPending(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return repository.findAll(
@@ -135,7 +135,7 @@ public class DisasterEventService {
         );
     }
 
-    // 🔹 Update Disaster
+    //Update Disaster
     public DisasterEvent update(Long id, DisasterEvent updatedData) {
 
         DisasterEvent existing = repository.findById(id)
@@ -155,7 +155,7 @@ public class DisasterEventService {
         return repository.save(existing);
     }
 
-    // ✅ 5-Record Retention Logic
+    //5-Record Retention Logic
     public void saveWithRetention(DisasterEvent event) {
         String location = event.getLocationName();
         
@@ -178,22 +178,22 @@ public class DisasterEventService {
         // Save new event
         event.setStatus(DisasterStatus.PENDING);
         repository.save(event);
-        System.out.println("✅ Saved new event for " + location);
+        System.out.println("Saved new event for " + location);
     }
 
     // Auto-Verification for Critical Earthquakes
     @Scheduled(fixedRate = 60000) // Every minute
     public void autoVerifyCriticalEarthquakes() {
-        System.out.println("🔍 Auto verification check running at: " + LocalDateTime.now());
+        System.out.println("Auto verification check running at: " + LocalDateTime.now());
 
         List<DisasterEvent> events = repository.findAutoVerifiableEarthquakes();
 
-        System.out.println("📊 Matching events count: " + events.size());
+        System.out.println("Matching events count: " + events.size());
 
         events.forEach(event -> {
             event.setStatus(DisasterStatus.VERIFIED);
             repository.save(event);
-            System.out.println("⚡ Auto-verified earthquake: " + event.getTitle() + " at " + event.getLocationName());
+            System.out.println("Auto-verified earthquake: " + event.getTitle() + " at " + event.getLocationName());
         });
     }
 }

@@ -25,7 +25,7 @@ public class DisasterApiService {
 
     @Scheduled(fixedRate = 300000) // Every 5 minutes
     public void syncAllDisasters() {
-        System.out.println("🔄 Syncing disasters from external APIs...");
+        System.out.println("Syncing disasters from external APIs...");
         
         List<DisasterEvent> allEvents = new ArrayList<>();
         
@@ -36,6 +36,6 @@ public class DisasterApiService {
             disasterEventService.saveWithRetention(event);
         }
         
-        System.out.println("✅ Synced " + allEvents.size() + " disasters");
+        System.out.println("Synced " + allEvents.size() + " disasters");
     }
 }
