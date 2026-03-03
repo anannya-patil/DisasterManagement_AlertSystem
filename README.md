@@ -261,21 +261,35 @@ git clone <repository-url>
 cd DisasterManagement_AlertSystem
 ```
 
-### 2. Configure Database
+### 2. Environment Configuration
 
-Update `application.properties`:
+This project uses environment variables for sensitive configuration.
+
+Before running the backend, create a `.env` file in the project root (same level as `pom.xml`).
+
+You can copy the template file:
 
 ```
-spring.datasource.url=jdbc:mysql://localhost:3306/disaster_management
-spring.datasource.username=root
-spring.datasource.password=your_password
-spring.jpa.hibernate.ddl-auto=update
+cp .env.example .env
 ```
+
+Or manually create a `.env` file with the following variables:
+
+```
+DB_USERNAME=your_db_username
+DB_PASSWORD=your_db_password
+```
+
+Update these values according to your local MySQL setup.
+
+Important:
+- The `.env` file is ignored by Git and must not be committed.
+- The application will not start if these variables are missing.
 
 ### 3. Run Backend
 
 ```
-mvn spring-boot:run
+.\mvnw.cmd spring-boot:run
 ```
 
 Server runs at:
