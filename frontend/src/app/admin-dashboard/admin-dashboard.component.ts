@@ -55,7 +55,6 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  // ✅ NEW METHOD - Navigate to disasters page
   goToDisasters(): void {
     this.router.navigate(['/disasters']);
   }
