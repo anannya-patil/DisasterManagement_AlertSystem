@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 })
 export class AlertService {
 
-  private baseUrl = 'http://localhost:8080/api';
+  private baseUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -30,11 +30,20 @@ export class AlertService {
     });
   }
 
-  requestRescue(location: string, message: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/citizen/request-rescue`,
-      { location, message },
-      { headers: this.getHeaders(), responseType: 'text' as 'json' }
-    );
+  requestRescue(region: string, description: string): Observable<any> {
+    const latitude = 0;
+    const longitude = 0;
+
+    const url =
+      `${this.baseUrl}/citizen/emergency-request` +
+      `?description=${description}` +
+      `&latitude=${latitude}` +
+      `&longitude=${longitude}` +
+      `&region=${region}`;
+
+    return this.http.post(url, {}, {
+      headers: this.getHeaders()
+    });
   }
 
   reportIncident(type: string, location: string, description: string): Observable<any> {
@@ -49,10 +58,17 @@ export class AlertService {
   // ========================
 
   broadcastAlert(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/admin/alerts`,
-      data,
-      { headers: this.getHeaders() }
-    );
+
+    const url =
+      `${this.baseUrl}/admin/alerts` +
+      `?disasterId=${data.disasterId}` +
+      `&title=${encodeURIComponent(data.title)}` +
+      `&message=${encodeURIComponent(data.message)}` +
+      `&region=${encodeURIComponent(data.region)}`;
+
+    return this.http.post(url, {}, {
+      headers: this.getHeaders()
+    });
   }
 
   resolveAlert(id: number): Observable<any> {
@@ -78,19 +94,4 @@ export class AlertService {
       { headers: this.getHeaders() }
     );
   }
-}
-requestRescue(location: string, message: string): Observable<any> {
-  return this.http.post(
-    `${this.baseUrl}/citizen/request-rescue`,
-    { location, message },
-    { headers: this.getHeaders(), responseType: 'text' as 'json' }
-  );
-}
-
-reportIncident(type: string, location: string, description: string): Observable<any> {
-  return this.http.post(
-    `${this.baseUrl}/citizen/report-incident`,
-    { type, location, description },
-    { headers: this.getHeaders(), responseType: 'text' as 'json' }
-  );
 }
