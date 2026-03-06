@@ -58,10 +58,17 @@ export class AlertService {
   // ========================
 
   broadcastAlert(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/admin/alerts`,
-      data,
-      { headers: this.getHeaders() }
-    );
+
+    const url =
+      `${this.baseUrl}/admin/alerts` +
+      `?disasterId=${data.disasterId}` +
+      `&title=${encodeURIComponent(data.title)}` +
+      `&message=${encodeURIComponent(data.message)}` +
+      `&region=${encodeURIComponent(data.region)}`;
+
+    return this.http.post(url, {}, {
+      headers: this.getHeaders()
+    });
   }
 
   resolveAlert(id: number): Observable<any> {
